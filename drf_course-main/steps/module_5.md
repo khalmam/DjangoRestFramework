@@ -1,12 +1,17 @@
 # Django Rest Framework (DRF) Course - Module 5
+
 This is my DRF course. I hope you like it.
 
 > These notes follow on from steps/module_4.md
-***
-***
+
+---
+
+---
 
 ## Current root directory
+
 Your root directory should look like the following.
+
 ```
 drf_course\  <--This is the root directory
     backend\
@@ -31,7 +36,7 @@ drf_course\  <--This is the root directory
             >wsgi.py
         utils\
             >__init__.py
-            >model_abstracts.py 
+            >model_abstracts.py
         >db.sqlite3
         >manage.py
         >requirements.txt
@@ -48,27 +53,29 @@ drf_course\  <--This is the root directory
     >README.md
     >server.py
 ```
+
 If in doubt, run the following git commands:
+
 ```
 git checkout module_5
 git pull origin module_5
 ```
 
-
 ## Steps/Commands
->Note: Please 'cd' into the root directory and fire up your virtual environment!
+
+> Note: Please 'cd' into the root directory and fire up your virtual environment!
 
 As I mentioned at the start of this course. This app will use token authentication to protect some of our endpoints. DRF makes this very easy.
 
 Lets begin.
 
-1) New app - We will apply token authentication on our ecommerce endpoints. However, we haven't created the app. Go ahead and create an ecommerce app with the following command.
+1. New app - We will apply token authentication on our ecommerce endpoints. However, we haven't created the app. Go ahead and create an ecommerce app with the following command.
 
 ```
 python manage.py startapp ecommerce
 ```
 
-2) Settings - Open /drf_course/settings.py and replace the REST_FRAMEWORK with the following code. Notice the new DEFAULT_AUTHENTICATION_CLASSES.
+2. Settings - Open /drf_course/settings.py and replace the REST_FRAMEWORK with the following code. Notice the new DEFAULT_AUTHENTICATION_CLASSES.
 
 ```
 REST_FRAMEWORK = {
@@ -99,6 +106,7 @@ REST_FRAMEWORK = {
 ```
 
 Now change INSTALLED_APPS to the following.
+
 ```
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -115,7 +123,8 @@ INSTALLED_APPS = [
     'ecommerce', #New app
 ]
 ```
-3) URL's - We now need to add a new endpoint to our urlconf file. Replace /drf_course/urls.py with the following code.
+
+3. URL's - We now need to add a new endpoint to our urlconf file. Replace /drf_course/urls.py with the following code.
 
 ```
 from django.urls import path
@@ -135,14 +144,15 @@ urlpatterns += [
 ]
 ```
 
-4) Migrate - You now need to migrate database changes. Use following code.
+4. Migrate - You now need to migrate database changes. Use following code.
+
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-4) Signals - We need a mechanism to create a token for every user that signs up to our app. This token is what will be returned when we call the new endpoint. Go ahead and create a new file in /ecommerce and call it signals.py.
-Use the following code in the new file.
+4. Signals - We need a mechanism to create a token for every user that signs up to our app. This token is what will be returned when we call the new endpoint. Go ahead and create a new file in /ecommerce and call it signals.py.
+   Use the following code in the new file.
 
 ```
 from django.db.models.signals import post_save
@@ -155,7 +165,9 @@ def report_uploaded(sender, instance, created, **kwargs):
     if created:
         Token.objects.create(user=instance)
 ```
+
 Now open /ecommerce/app.py and add the following code.
+
 ```
 from django.apps import AppConfig
 
@@ -168,14 +180,15 @@ class EcommerceConfig(AppConfig):
         import ecommerce.signals
 ```
 
+5. Create a user - Go ahead and create a new superuser. This will server 2 purposes. We we gain access to the built in Django admin page and we will also create a new token. Open a new terminal and use the following code.
 
-5) Create a user - Go ahead and create a new superuser. This will server 2 purposes. We we gain access to the built in Django admin page and we will also create a new token. Open a new terminal and use the following code.
 ```
 python manage.py createsuperuser
 ```
+
 Add a username, email and password.
 
-6) Call the endpoint - You can call the new endpoint with the following commands. With any luck, you will receive a new token ID in the response.
+6. Call the endpoint - You can call the new endpoint with the following commands. With any luck, you will receive a new token ID in the response.
 
 The following commands will call the API end point:
 
@@ -185,6 +198,7 @@ curl -XPOST -F 'username=**your_username**' -F 'password=**your_password**' http
 
 ```
 http post http://api:8000/api-token-auth/ username=**your_username** password=**your_password**
+http post http://api:8000/api-token-auth/ username=**k** password=**k**
 ```
 
 With any luck, you should see something that looks like the following:
@@ -206,11 +220,14 @@ X-Frame-Options: DENY
 }
 ```
 
-***
-***
+---
+
+---
 
 ## Root directory
->Note: If all went well, your root directory should now look like this
+
+> Note: If all went well, your root directory should now look like this
+
 ```
 drf_course\  <--This is the root directory
     backend\
@@ -263,5 +280,7 @@ drf_course\  <--This is the root directory
     >README.md
     >server.py
 ```
-***
-***
+
+---
+
+---
